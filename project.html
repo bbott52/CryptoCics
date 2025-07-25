@@ -158,6 +158,7 @@
     <a href="import_wallet.html" class="btn">Import Wallet</a>
   </div>
 </div>
+
 <!-- HISTORY -->
 <div id="history" class="content-section">
   <div class="content-box">
@@ -223,13 +224,28 @@
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
   }
 
-  // Load theme preference
   window.onload = function () {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
       document.body.classList.add('light-theme');
       document.querySelector('.theme-toggle').textContent = '☀️';
     }
+
+    // ✅ Load BNB Price from CoinGecko
+    fetch("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd")
+      .then(response => response.json())
+      .then(data => {
+        const price = data?.binancecoin?.usd;
+        if (price) {
+          document.getElementById("bnbPrice").innerText = `$${price.toFixed(2)} USD`;
+        } else {
+          document.getElementById("bnbPrice").innerText = "Price unavailable";
+        }
+      })
+      .catch(error => {
+        document.getElementById("bnbPrice").innerText = "Failed to load price";
+        console.error("Error fetching BNB price:", error);
+      });
   };
 </script>
 
